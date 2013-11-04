@@ -52,11 +52,10 @@
 			}
 
 			_listenInput = function(dom){ 
+				_setParentStyle(dom);
 				_setLabel(dom);
 				dom = _updateDom(dom);
-				dom.onpropertychange = function(e){
-					var e = e || window.event;
-		        	if (e.propertyName.toLowerCase() == "value") {
+				dom.onkeyup = function (e) {
 		        		if(this.value.length > 0){
 		        			_getLabelNode(this).style.display = 'none';
 		        		} else {
@@ -64,7 +63,6 @@
 		        		}
 		            }
 		        }
-			}
 
 			_getLabelNode = function(dom){
 				var childDomList = dom.parentNode.childNodes, childDom;
@@ -87,6 +85,12 @@
 						    'color:#b8b8b8;' +
 						    'font-size:14px;';
 				addCss(labelDom, css);
+			}
+
+			_setParentStyle = function (dom) {
+				var parent = dom.parentNode,
+					css = 'position:relative;';
+				addCss(parent, css);
 			}
 
 			// @public
@@ -117,7 +121,7 @@
 		return function(tagNameOrId){
 			var el = returnDomObj(tagNameOrId),
 				supportPlaceholder = 'placeholder' in document.createElement('input');
-			if(!supportPlaceholder){
+			if (!supportPlaceholder && /MSIE 9|MSIE 8|MSIE 7|MSIE 6/g.test(navigator.userAgent)) {
 				if(el.length != undefined){
 					for(var i = 0, len = el.length; i < len; i++){
 						new Placeholder(el[i]);
